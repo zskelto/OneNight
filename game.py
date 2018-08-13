@@ -1,3 +1,12 @@
+class Player:
+    username = " "
+    team = " "
+    role = " "
+    action = " "
+
+    def __init__(self, n, r):
+        self.username = n
+        self.role = role
 
 #Determines the Player Base.
 Players=0
@@ -12,7 +21,7 @@ Alpha=0
 Mystic=0
 Minion=0
 #Townies
-PI=0
+Paranormal_Investigator=0
 Aura_Seer=0
 Robber=0
 Troublemaker=0
