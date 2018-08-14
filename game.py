@@ -32,8 +32,8 @@ Doppelganger=0
 #Determines the number of players
 Players = input("How many players?\n")
 while Players<3:
-    print "There should be atleast 3 players for a game."
-    Players=input("Pleaser enter the amount of palyers:\n")
+    print "There should be at least 3 players for a game."
+    Players=input("Please enter the amount of players:\n")
 
 #Makes the teams
 Deck = Players+3
