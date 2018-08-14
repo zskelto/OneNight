@@ -58,6 +58,22 @@ async def hello(context):
 		pass_context=True)
 async def OneNight(context):
 	await client.say("Get ready for a game of One Night Ultimate Werewolf!")
+	USERS = []
+	await client.say("Type join to join the game.\nType start to start the game.\nType cancel to cancel the game.")
+	cont = 1
+	print("Starting input collection")
+	while cont == 1:
+		print("While loop")
+		msg = await client.wait_for_message()
+		print("Recieved:",msg.content)
+		if msg.content == "join":
+			print("Message was join")
+			USERS=msg.author
+			await client.say("Welcome to the game, " +  msg.author.name)
+	 	
+		else:
+			print("Cancel while")
+			cont = 0
 
 #@client.event
 #async def on_message(message):
