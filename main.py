@@ -1,12 +1,15 @@
-import discord
+#import discord
 import configparser
 import asyncio
+from discord.ext.commands import Bot
+
+BOT_PREFIX='$'
 
 cfg = configparser.ConfigParser()
 cfg.read('config.cfg')
 
 #client = discord.Client()
-client = BOT(command_prefix=BOT_PREFIX)
+client = Bot(command_prefix=BOT_PREFIX)
 
 #Setup for One Night
 class Player:
@@ -40,10 +43,10 @@ Witch=0
 Drunk=0
 Doppelganger=0
 
-@client.command(name='hello',
+@client.command(name='hi',
 		description='Says hello back.',
 		brief='A simple greeting.',
-		aliases=['hi', 'goodmorning', 'goodevening', 'goodmorning'],
+		aliases=['hello', 'goodevening', 'goodmorning'],
 		pass_context=True)
 async def hello(context):
 	await client.say("Hello " + context.message.author.mention)
