@@ -1,6 +1,8 @@
 import discord
+import configparser
 
-TOKEN = 'NDU5ODExOTY1ODY3NjU1MTY4.DlSdKw.XMHT8u93bcUSlr_dWudh8j6qevc'
+cfg = configparser.ConfigParser()
+cfg.read('config.cfg')
 
 client = discord.Client()
 
@@ -54,4 +56,4 @@ async def on_ready():
 	print(client.user.id)
 	print('------')
 
-client.run(TOKEN)
+client.run(cfg['Default']['token'])
