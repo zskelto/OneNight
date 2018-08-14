@@ -1,2 +1,2 @@
 # OneNight
-A project to write the game One Night in C++.
+A project to write the game One Night in python.
