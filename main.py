@@ -62,7 +62,7 @@ async def OneNight(context):
 	await client.say("Type join to join the game.\nType start to start the game.\nType cancel to cancel the game.")
 	cont = 1
 	while cont == 1:
-		msg = await client.wait_for_message()
+		msg = await client.wait_for_message(channel=context.message.channel)
 		if msg.content == "join":
 			USERS.append(msg.author)
 			await client.say("Welcome to the game, " +  msg.author.name)
