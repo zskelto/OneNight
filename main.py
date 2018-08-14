@@ -1,8 +1,8 @@
-#import discord
+import discord
 import configparser
 import asyncio
 from discord.ext.commands import Bot
-
+from discord import Game
 BOT_PREFIX='$'
 
 cfg = configparser.ConfigParser()
@@ -72,6 +72,7 @@ async def OneNight(context):
 
 @client.event
 async def on_ready():
+	await client.change_presence(game=Game(name="Pokemon"))
 	print('Logged in as')
 	print(client.user.name)
 	print(client.user.id)
