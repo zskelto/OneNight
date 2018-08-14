@@ -43,13 +43,21 @@ Witch=0
 Drunk=0
 Doppelganger=0
 
-@client.command(name='hi',
+@client.command(name='hello',
 		description='Says hello back.',
 		brief='A simple greeting.',
-		aliases=['hello', 'goodevening', 'goodmorning'],
+		aliases=['hi', 'goodevening', 'goodmorning'],
 		pass_context=True)
 async def hello(context):
 	await client.say("Hello " + context.message.author.mention)
+
+@client.command(name='OneNight',
+		description='Starts a game of one night, 3 players are required.',
+		brief='Plays a game of One Night.',
+		aliases=['on','1-night','1_night','1n','onenight','one_night'],
+		pass_context=True)
+async def OneNight(context):
+	await client.say("Get ready for a game of One Night Ultimate Werewolf!")
 
 #@client.event
 #async def on_message(message):
