@@ -1,10 +1,12 @@
 import discord
 import configparser
+import asyncio
 
 cfg = configparser.ConfigParser()
 cfg.read('config.cfg')
 
-client = discord.Client()
+#client = discord.Client()
+client = BOT(command_prefix=BOT_PREFIX)
 
 #Setup for One Night
 class Player:
@@ -38,16 +40,24 @@ Witch=0
 Drunk=0
 Doppelganger=0
 
-@client.event
-async def on_message(message):
-	
-	#Bot should not reply to itself
-	if message.author == client.user:
-		return
-	
-	if message.content.startswith('!hello'):
-		msg = 'Hello {0.author.mention}'.format(message)
-		await client.send_message(message.channel, msg)
+@client.command(name='hello',
+		description='Says hello back.',
+		brief='A simple greeting.',
+		aliases=['hi', 'goodmorning', 'goodevening', 'goodmorning'],
+		pass_context=True)
+async def hello(context):
+	await client.say("Hello " + context.message.author.mention)
+
+#@client.event
+#async def on_message(message):
+#	
+#	#Bot should not reply to itself
+#	if message.author == client.user:
+#		return
+#	
+#	if message.content.startswith('!hello'):
+#		msg = 'Hello {0.author.mention}'.format(message)
+#		await client.send_message(message.channel, msg)
 
 @client.event
 async def on_ready():
