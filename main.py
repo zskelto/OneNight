@@ -13,13 +13,6 @@ cfg.read('config.cfg')
 client = Bot(command_prefix=BOT_PREFIX)
 
 #Setup for One Night
-class Player:
-	PlayerInfo
-	PlayerRole
-	def __init__(self,pinfo,prole):
-		PlayerInfo=pinfo
-		PlayerRole=prole
-
 class Role:
 	RoleName = ""
 	RoleTeam = "" 
@@ -30,6 +23,21 @@ class Role:
 		self.RoleTeam = t
 		self.RoleEnable = e
 		
+class Player:
+	PlayerInfo = discord.User()
+	PlayerRole = Role("","",0)
+	def __init__(self,pinfo,prole):
+		PlayerInfo=pinfo
+		PlayerRole=prole
+
+
+def isint(value):
+	try:
+		int(value)
+		return True
+	except ValueError:
+		return False
+
 ROLES = []
 RoleList = ["Doppleganger", "Werewolf", "Mystic Wolf", "Alpha Wolf", "Minion", "Paranormal Investigator", "Robber", "Troublemaker", "Witch", "Aura Seer", "Drunk", "Tanner"]
 j = 0
@@ -53,7 +61,7 @@ for i in ROLES:
 InProgress=0
 Players=0
 Deck=0
-	
+Werewolves=0	
 @client.command(name='hello',
 		description='Says hello back.',
 		brief='A simple greeting.',
@@ -141,11 +149,27 @@ async def OneNight(context):
 				await client.say("Game is canceled")
 				return
 	
+	global Werewolves
 	global prompt
 	global ROLES
 	#Creates custom deck:
 	if reuse==0 or reuse==2:
+		Deck=0
+		for i in ROLES:
+			i.RoleEnable=0
+
 		await client.say("Type the number that corresponds to the role to add to the deck:\n" + prompt)
+		while Deck < Players+3:
+			msg = await client.wait_for_message(channel=context.message.channel)
+			if isint(msg.content):
+				num = int(msg.content)
+				if num>=1 and num<=12:
+					if ROLES[num-1].RoleEnable == 1:
+						await client.say(ROLES[num-1].RoleName + " is already in the deck(" + str(Deck) + "/" + str(Players+3) + ").")
+					else:
+						Deck += 1
+						ROLES[num-1].RoleEnable = 1
+						await client.say(ROLES[num-1].RoleName + " was added to the deck(" + str(Deck) + "/" + str(Players+3) + ").")
 	#current_size = 0
 	#while current_size < Deck:
 	#	current_size += 1
