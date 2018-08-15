@@ -61,7 +61,8 @@ for i in ROLES:
 InProgress=0
 Players=0
 Deck=0
-Werewolves=0	
+Werewolves=0
+DeckString=""	
 @client.command(name='hello',
 		description='Says hello back.',
 		brief='A simple greeting.',
@@ -135,7 +136,7 @@ async def OneNight(context):
 	Players=len(USERS)
 	
 	#Prepares Deck
-	
+	#Checks if there is a deck that can be reused
 	reuse=0
 	if Deck == Players+3:
 		await client.say("A deck from a past game is available.\nWould you like to reuse previous deck?(y/n/cancel)")
@@ -148,18 +149,21 @@ async def OneNight(context):
 			elif msg.content == "cancel":
 				await client.say("Game is canceled")
 				return
-	
+	#Important Variables
 	global Werewolves
 	global prompt
 	global ROLES
+	global DeckString
 	#Creates custom deck:
 	if reuse==0 or reuse==2:
+		#Clears the Current Deck
 		Deck=0
 		Werewolves=0
 		for i in ROLES:
 			i.RoleEnable=0
-
-		await client.say("Type the number that corresponds to the role to add to the deck:\n" + prompt)
+		#Prompts the user for deck elements.
+		await client.say("Type the number that corresponds to the role to add to the deck (or type cancel):\n" + prompt)
+		#Builds Deck
 		while Deck < Players+3:
 			msg = await client.wait_for_message(channel=context.message.channel)
 			if isint(msg.content):
@@ -173,10 +177,27 @@ async def OneNight(context):
 						if(ROLES[num-1].RoleName == "Werewolf"):
 							Werewolves += 1
 						await client.say(ROLES[num-1].RoleName + " was added to the deck(" + str(Deck) + "/" + str(Players+3) + ").")
-	#current_size = 0
-	#while current_size < Deck:
-	#	current_size += 1
+			elif msg.content == "cancel":
+				await client.say("Game is canceled")
+				return
+		#DeckString will Contain the Contents of the deck created.
+		DeckString = ""
+		for i in ROLES:
+			if i.RoleEnable == 1:
+				if i.RoleName == "Werewolf":
+					DeckString += i.RoleName + " x" + str(Werewolves) + "\n"
+				else:
+					DeckString += i.RoleName + "\n"
+	#Displays the deck that will be used for the game
+	await client.say("Contents of Deck:\n\n" + DeckString + "\nPrepare to play!")
 	
+	#Assigns Roles to Users
+	j=0
+	ListofPlayers=[] 
+	while j<Players:
+		p_object = Player(USERS[j], ROLES[j])
+		ListofPlayers.append(p_object) 
+		j += 1
 	#Notifies the program that the game is over.
 	InProgress=0
 
