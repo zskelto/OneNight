@@ -1,4 +1,5 @@
 import discord
+import random
 import math
 import configparser
 import asyncio
@@ -27,8 +28,8 @@ class Player:
 	PlayerInfo = discord.User()
 	PlayerRole = Role("","",0)
 	def __init__(self,pinfo,prole):
-		PlayerInfo=pinfo
-		PlayerRole=prole
+		self.PlayerInfo=pinfo
+		self.PlayerRole=prole
 
 
 def isint(value):
@@ -148,6 +149,7 @@ async def OneNight(context):
 				reuse = 2
 			elif msg.content == "cancel":
 				await client.say("Game is canceled")
+				InProgress = 0
 				return
 	#Important Variables
 	global Werewolves
@@ -179,6 +181,7 @@ async def OneNight(context):
 						await client.say(ROLES[num-1].RoleName + " was added to the deck(" + str(Deck) + "/" + str(Players+3) + ").")
 			elif msg.content == "cancel":
 				await client.say("Game is canceled")
+				InProgress=0
 				return
 		#DeckString will Contain the Contents of the deck created.
 		DeckString = ""
@@ -190,14 +193,31 @@ async def OneNight(context):
 					DeckString += i.RoleName + "\n"
 	#Displays the deck that will be used for the game
 	await client.say("Contents of Deck:\n\n" + DeckString + "\nPrepare to play!")
-	
+	DeckIndex=[]
+	j=0 
+	while j < 12:
+		if ROLES[j].RoleEnable == 1:
+			if ROLES[j].RoleName == "Werewolf":
+				k=0
+				while k < Werewolves:
+					DeckIndex.append(j)
+					k+=1
+			else:
+				DeckIndex.append(j)
+		j+=1
 	#Assigns Roles to Users
 	j=0
 	ListofPlayers=[] 
 	while j<Players:
-		p_object = Player(USERS[j], ROLES[j])
+		k = random.choice(DeckIndex)
+		DeckIndex.remove(k)
+		p_object = Player(USERS[j], ROLES[k])
 		ListofPlayers.append(p_object) 
 		j += 1
+	#PM Players their Roles
+	for i in ListofPlayers:
+		await client.send_message(i.PlayerInfo,i.PlayerRole.RoleName)
+	
 	#Notifies the program that the game is over.
 	InProgress=0
 
