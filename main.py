@@ -14,17 +14,46 @@ client = Bot(command_prefix=BOT_PREFIX)
 
 #Setup for One Night
 class Player:
-    username = " "
-    team = " "
-    role = " "
-    action = " "
+	PlayerInfo
+	PlayerRole
+	def __init__(self,pinfo,prole):
+		PlayerInfo=pinfo
+		PlayerRole=prole
 
-    def __init__(self, n, r):
-        self.username = n
-        self.role = role
+class Role:
+	RoleName = ""
+	RoleTeam = "" 
+	RoleEnable = 0
+	
+	def __init__(self,n,t,e):
+		self.RoleName = n
+		self.RoleTeam = t
+		self.RoleEnable = e
+		
+ROLES = []
+RoleList = ["Doppleganger", "Werewolf", "Mystic Wolf", "Alpha Wolf", "Minion", "Paranormal Investigator", "Robber", "Troublemaker", "Witch", "Aura Seer", "Drunk", "Tanner"]
+j = 0
+while j < 12:
+	if j == 0:
+		ROLES.append(Role(RoleList[j],"Unknown",0))
+	elif j>0 and j <5:
+		ROLES.append(Role(RoleList[j],"Werewolves",0))
+	elif j>4 and j <11:
+		ROLES.append(Role(RoleList[j],"Village",0))		
+	else:
+		ROLES.append(Role(RoleList[j],"Tanner",0))
+	j += 1
+
+prompt = ""
+j=1
+for i in ROLES:
+	prompt += str(j) + ". " + ROLES[j-1].RoleName + "\n"   
+	j += 1	
 
 InProgress=0
-
+Players=0
+Deck=0
+	
 @client.command(name='hello',
 		description='Says hello back.',
 		brief='A simple greeting.',
@@ -83,68 +112,44 @@ async def OneNight(context):
 				await client.say("There must be atleast 3 players, there are only " + str(len(USERS)) + ".")
 			
 			else:
+				await client.say("Starting game")
 				cont = 0
 		
 		elif msg.content == "cancel":
 			await client.say("Game is canceled")
 			InProgress=0
 			return
-	
+		
 
 	#Commences the Game
-	Players=0
-	Deck=0
-	Werewolves=0
-	Towns=0
-	#Specify What Roles to Include.
-	#Tanner
-	Tanner=0
-	#Werewolves
-	Alpha=0
-	Mystic=0
-	Minion=0
-	#Townies	
-	Paranormal_Investigator=0
-	Aura_Seer=0
-	Robber=0
-	Troublemaker=0
-	Witch=0
-	Drunk=0
-	Doppelganger=0	
-
+	global Players
+	global Deck
 	Players=len(USERS)
-	Deck = Players + 3
-	
-	#Preset:
-	#Werewolves = int(math.ceil(Deck/3))
-	#Towns = Deck - Werewolves
-	#await client.say("Deck will consist of " + str(Werewolves) + " Werewolves and " + str(Towns) + " Villagers.")	
 	
 	#Prepares Deck
-	#Checks to see if custom or default deck is desired
-	await client.say("Would you like to use default deck? (y/n)")
-	cont = 1
-	while cont == 1:
-		msg = await client.wait_for_message(channel=context.message.channel)
-		if msg.content == "y":
-			cont = 0
-			InProgress = 0
-			await client.say("Default Deck Creator is Not Functional")
-			return
-		elif msg.content == "n":
-			cont = 2
-	ROLES = ["Tanner", "Alpha Wolf", "Mystic Wolf", "Werewolf", "Minion", "Paranormal Investigator", "Aura Seer", "Robber", "Troublemaker", "Witch", "Drunk", "Doppelganger"]
-	prompt = ""
-	j=1
-	for i in ROLES:
-		prompt += str(j) + ". " + ROLES[j-1] + "\n"   
-		j += 1
+	
+	reuse=0
+	if Deck == Players+3:
+		await client.say("A deck from a past game is available.\nWould you like to reuse previous deck?(y/n/cancel)")
+		while reuse == 0:
+			msg = await client.wait_for_message(channel=context.message.channel)	
+			if msg.content == "y":
+				reuse = 1
+			elif msg.content == "n":
+				reuse = 2
+			elif msg.content == "cancel":
+				await client.say("Game is canceled")
+				return
+	
+	global prompt
+	global ROLES
 	#Creates custom deck:
-	if cont == 2:
+	if reuse==0 or reuse==2:
 		await client.say("Type the number that corresponds to the role to add to the deck:\n" + prompt)
-		#current_size = 0
-		#while current_size < Deck:
-		#	current_size += 1
+	#current_size = 0
+	#while current_size < Deck:
+	#	current_size += 1
+	
 	#Notifies the program that the game is over.
 	InProgress=0
 
