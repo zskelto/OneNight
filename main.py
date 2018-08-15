@@ -22,27 +22,7 @@ class Player:
         self.username = n
         self.role = role
 
-#Determines the Player Base.
 InProgress=0
-Players=0
-Deck=0
-Werewolves=0
-Towns=0
-#Specify What Roles to Include.
-#Tanner
-Tanner=0
-#Werewolves
-Alpha=0
-Mystic=0
-Minion=0
-#Townies
-Paranormal_Investigator=0
-Aura_Seer=0
-Robber=0
-Troublemaker=0
-Witch=0
-Drunk=0
-Doppelganger=0
 
 @client.command(name='hello',
 		description='Says hello back.',
@@ -52,15 +32,26 @@ Doppelganger=0
 async def hello(context):
 	await client.say("Hello " + context.message.author.mention)
 
+
+
+
+#Playes a game of One Night Ultimate Werewolf.
 @client.command(name='OneNight',
-		description='Starts a game of one night, 3 players are required.',
+		description='Starts a game of One Night Ultimate Werewolf, 3 players are required.',
 		brief='Plays a game of One Night.',
 		aliases=['on','1-night','1_night','1n','onenight','one_night'],
 		pass_context=True)
 async def OneNight(context):
 	
+	#Checks if PM
+	if context.message.server == None:
+		await client.say("Game must be played in server")
+		return
+	
 	#Checks to see if a Game is already in progress.
+	#TODO Let the Game Run on Multiple Servers
 	global InProgress
+	SERVER=context.message.server
 	if InProgress == 0:
 		InProgress = 1
 	else:
@@ -86,14 +77,49 @@ async def OneNight(context):
 				await client.say("Welcome to the game, " +  msg.author.name)
 	 	
 		elif msg.content == "start":
-
-			cont = 0
+			
+			if len(USERS) < 3:
+				await client.say("There must be atleast 3 players, there are only " + str(len(USERS)) + ".")
+			
+			else:
+				cont = 0
 		
 		elif msg.content == "cancel":
-			cont = 0
+			await client.say("Game is canceled")
+			InProgress=0
+			return
 	
+
+	#Commences the Game
+	Players=0
+	Deck=0
+	Werewolves=0
+	Towns=0
+	#Specify What Roles to Include.
+	#Tanner
+	Tanner=0
+	#Werewolves
+	Alpha=0
+	Mystic=0
+	Minion=0
+	#Townies	
+	Paranormal_Investigator=0
+	Aura_Seer=0
+	Robber=0
+	Troublemaker=0
+	Witch=0
+	Drunk=0
+	Doppelganger=0
+
+	Players=len(USERS)
+	Deck = Players + 3
+	Werewolves = Deck/3
+	Towns = Deck - Werewolves
 	#Notifies the program that the game is over.
 	InProgress=0
+
+
+
 #@client.event
 #async def on_message(message):
 #	
@@ -105,6 +131,8 @@ async def OneNight(context):
 #		msg = 'Hello {0.author.mention}'.format(message)
 #		await client.send_message(message.channel, msg)
 
+
+
 @client.event
 async def on_ready():
 	await client.change_presence(game=Game(name="Pokemon"))
@@ -113,6 +141,8 @@ async def on_ready():
 	print(client.user.id)
 	print('------')
 
+
+
 async def list_servers():
 	await client.wait_until_ready()
 	while not client.is_closed:
@@ -120,6 +150,8 @@ async def list_servers():
 		for server in client.servers:
 			print(server.name)
 		await asyncio.sleep(600)
+
+
 
 client.loop.create_task(list_servers())
 client.run(cfg['Default']['token'])
