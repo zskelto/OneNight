@@ -1,4 +1,5 @@
 import discord
+import math
 import configparser
 import asyncio
 from discord.ext.commands import Bot
@@ -69,9 +70,9 @@ async def OneNight(context):
 		if msg.content == "join":
 			storage=0
 			i=0
-			for i in USERS:
-				if(msg.author.name == i.name):
-					storage=1
+			#for i in USERS:
+			#	if(msg.author.name == i.name):
+			#		storage=1
 			if storage==0:	
 				USERS.append(msg.author)
 				await client.say("Welcome to the game, " +  msg.author.name)
@@ -109,12 +110,41 @@ async def OneNight(context):
 	Troublemaker=0
 	Witch=0
 	Drunk=0
-	Doppelganger=0
+	Doppelganger=0	
 
 	Players=len(USERS)
 	Deck = Players + 3
-	Werewolves = Deck/3
-	Towns = Deck - Werewolves
+	
+	#Preset:
+	#Werewolves = int(math.ceil(Deck/3))
+	#Towns = Deck - Werewolves
+	#await client.say("Deck will consist of " + str(Werewolves) + " Werewolves and " + str(Towns) + " Villagers.")	
+	
+	#Prepares Deck
+	#Checks to see if custom or default deck is desired
+	await client.say("Would you like to use default deck? (y/n)")
+	cont = 1
+	while cont == 1:
+		msg = await client.wait_for_message(channel=context.message.channel)
+		if msg.content == "y":
+			cont = 0
+			InProgress = 0
+			await client.say("Default Deck Creator is Not Functional")
+			return
+		elif msg.content == "n":
+			cont = 2
+	ROLES = ["Tanner", "Alpha Wolf", "Mystic Wolf", "Werewolf", "Minion", "Paranormal Investigator", "Aura Seer", "Robber", "Troublemaker", "Witch", "Drunk", "Doppelganger"]
+	prompt = ""
+	j=1
+	for i in ROLES:
+		prompt += str(j) + ". " + ROLES[j-1] + "\n"   
+		j += 1
+	#Creates custom deck:
+	if cont == 2:
+		await client.say("Type the number that corresponds to the role to add to the deck:\n" + prompt)
+		#current_size = 0
+		#while current_size < Deck:
+		#	current_size += 1
 	#Notifies the program that the game is over.
 	InProgress=0
 
