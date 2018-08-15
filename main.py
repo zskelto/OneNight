@@ -155,6 +155,7 @@ async def OneNight(context):
 	#Creates custom deck:
 	if reuse==0 or reuse==2:
 		Deck=0
+		Werewolves=0
 		for i in ROLES:
 			i.RoleEnable=0
 
@@ -164,11 +165,13 @@ async def OneNight(context):
 			if isint(msg.content):
 				num = int(msg.content)
 				if num>=1 and num<=12:
-					if ROLES[num-1].RoleEnable == 1:
+					if ROLES[num-1].RoleEnable == 1 and ROLES[num-1].RoleName != "Werewolf":
 						await client.say(ROLES[num-1].RoleName + " is already in the deck(" + str(Deck) + "/" + str(Players+3) + ").")
 					else:
 						Deck += 1
 						ROLES[num-1].RoleEnable = 1
+						if(ROLES[num-1].RoleName == "Werewolf"):
+							Werewolves += 1
 						await client.say(ROLES[num-1].RoleName + " was added to the deck(" + str(Deck) + "/" + str(Players+3) + ").")
 	#current_size = 0
 	#while current_size < Deck:
