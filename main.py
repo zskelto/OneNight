@@ -23,6 +23,7 @@ class Player:
         self.role = role
 
 #Determines the Player Base.
+InProgress=0
 Players=0
 Deck=0
 Werewolves=0
@@ -57,19 +58,42 @@ async def hello(context):
 		aliases=['on','1-night','1_night','1n','onenight','one_night'],
 		pass_context=True)
 async def OneNight(context):
+	
+	#Checks to see if a Game is already in progress.
+	global InProgress
+	if InProgress == 0:
+		InProgress = 1
+	else:
+		await client.say("A game is already in progress")
+		return
+	#Notifies user the game is about to start.
 	await client.say("Get ready for a game of One Night Ultimate Werewolf!")
+	
+	#Builds the player base.
 	USERS = []
 	await client.say("Type join to join the game.\nType start to start the game.\nType cancel to cancel the game.")
 	cont = 1
 	while cont == 1:
 		msg = await client.wait_for_message(channel=context.message.channel)
 		if msg.content == "join":
-			USERS.append(msg.author)
-			await client.say("Welcome to the game, " +  msg.author.name)
+			storage=0
+			i=0
+			for i in USERS:
+				if(msg.author.name == i.name):
+					storage=1
+			if storage==0:	
+				USERS.append(msg.author)
+				await client.say("Welcome to the game, " +  msg.author.name)
 	 	
-		else:
-			cont = 0
+		elif msg.content == "start":
 
+			cont = 0
+		
+		elif msg.content == "cancel":
+			cont = 0
+	
+	#Notifies the program that the game is over.
+	InProgress=0
 #@client.event
 #async def on_message(message):
 #	
