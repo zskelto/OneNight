@@ -39,8 +39,15 @@ def isint(value):
 	except ValueError:
 		return False
 
+InProgress=0
+Players=0
+Deck=0
+Werewolves=0
+DeckString=""	
+prompt = ""
 ROLES = []
-RoleList = ["Doppleganger", "Werewolf", "Mystic Wolf", "Alpha Wolf", "Minion", "Paranormal Investigator", "Robber", "Troublemaker", "Witch", "Aura Seer", "Drunk", "Tanner"]
+RoleList = ["Doppleganger", "Werewolf", "Alpha Wolf", "Mystic Wolf", "Minion", "Paranormal Investigator", "Robber", "Troublemaker", "Witch", "Aura Seer", "Drunk", "Tanner"]
+#Creates a list of roles
 j = 0
 while j < 12:
 	if j == 0:
@@ -52,18 +59,13 @@ while j < 12:
 	else:
 		ROLES.append(Role(RoleList[j],"Tanner",0))
 	j += 1
-
-prompt = ""
+#Creates a printable list of roles.
 j=1
 for i in ROLES:
 	prompt += str(j) + ". " + ROLES[j-1].RoleName + "\n"   
 	j += 1	
 
-InProgress=0
-Players=0
-Deck=0
-Werewolves=0
-DeckString=""	
+#Says hi back.
 @client.command(name='hello',
 		description='Says hello back.',
 		brief='A simple greeting.',
@@ -214,10 +216,37 @@ async def OneNight(context):
 		p_object = Player(USERS[j], ROLES[k])
 		ListofPlayers.append(p_object) 
 		j += 1
-	#PM Players their Roles
+	#PM Players Their Roles
 	for i in ListofPlayers:
-		await client.send_message(i.PlayerInfo,i.PlayerRole.RoleName)
-	
+		await client.send_message(i.PlayerInfo, "Your role is " + i.PlayerRole.RoleName + "\nYou side with the " + i.PlayerRole.RoleName)
+	#Disperses the Rest of the Deck
+	MiddleCards = []
+	for i in DeckIndex:
+		MiddleCards.append(ROLES[i])
+	#Adds a wolf card if alpha is enabled
+	WolfCard = ROLES[1]
+	if ROLES[2].RoleEnable == 1:
+		WolfCard.RoleEnable = 1
+	else:
+		WolfCard.RoleEnable = 0
+	#Starts the game
+	CurrentPlayer = discord.User()
+	#First Role: Doppelganger
+	if ROLES[0].RoleEnable == 1:
+		find=0
+		j=0
+		while find == 0 and j < Players:
+			if ListofPlayers[j].PlayerRole.RoleName == ROLES[0].RoleName:
+				find = 1
+				CurrentPlayer=ListofPlayers[j]
+			else:
+				j += 1
+		if find == 1:
+			description = "Select another player and you will become that player's role:\n"
+			for i in ListofPlayers:
+				if CurrentPlayer.PlayerInfo != i.PlayerInfo:
+					description += i.PlayerInfo.name + "\n"
+			await client.send_message(CurrentPlayer.PlayerInfo, description)
 	#Notifies the program that the game is over.
 	InProgress=0
 
