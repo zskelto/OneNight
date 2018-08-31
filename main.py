@@ -218,7 +218,7 @@ async def OneNight(context):
 		j += 1
 	#PM Players Their Roles
 	for i in ListofPlayers:
-		await client.send_message(i.PlayerInfo, "Your role is " + i.PlayerRole.RoleName + "\nYou side with the " + i.PlayerRole.RoleName)
+		await client.send_message(i.PlayerInfo, "Your role is " + i.PlayerRole.RoleName + "\nYou side with the " + i.PlayerRole.RoleTeam)
 	#Disperses the Rest of the Deck
 	MiddleCards = []
 	for i in DeckIndex:
@@ -243,9 +243,11 @@ async def OneNight(context):
 				j += 1
 		if find == 1:
 			description = "Select another player and you will become that player's role:\n"
+			j=1
 			for i in ListofPlayers:
-				if CurrentPlayer.PlayerInfo != i.PlayerInfo:
-					description += i.PlayerInfo.name + "\n"
+				#if CurrentPlayer.PlayerInfo != i.PlayerInfo:
+				description += str(j) + ". " + i.PlayerInfo.name + "\n"
+				j += 1
 			await client.send_message(CurrentPlayer.PlayerInfo, description)
 	#Notifies the program that the game is over.
 	InProgress=0
