@@ -207,6 +207,7 @@ async def OneNight(context):
 			else:
 				DeckIndex.append(j)
 		j+=1
+	
 	#Assigns Roles to Users
 	j=0
 	ListofPlayers=[] 
@@ -224,7 +225,7 @@ async def OneNight(context):
 	for i in DeckIndex:
 		MiddleCards.append(ROLES[i])
 	#Adds a wolf card if alpha is enabled
-	WolfCard = ROLES[1]
+	WolfCard = Role(ROLES[1].RoleName, ROLES[1].RoleTeam, ROLES[1].RoleEnable)
 	if ROLES[2].RoleEnable == 1:
 		WolfCard.RoleEnable = 1
 	else:
@@ -249,6 +250,13 @@ async def OneNight(context):
 				description += str(j) + ". " + i.PlayerInfo.name + "\n"
 				j += 1
 			await client.send_message(CurrentPlayer.PlayerInfo, description)
+			stop = False
+			while stop != True:
+				msg = await client.wait_for_message(author=CurrentPlayer.PlayerInfo)
+				if isint(msg.content):
+					num = int(msg.content)
+					if num>0 & num<Players-1:
+						stop=True
 	#Notifies the program that the game is over.
 	InProgress=0
 
@@ -262,7 +270,7 @@ async def OneNight(context):
 #		return
 #	
 #	if message.content.startswith('!hello'):
-#		msg = 'Hello {0.author.mention}'.format(message)
+#		msg = '!hello {0.author.mention}'.format(message)
 #		await client.send_message(message.channel, msg)
 
 
